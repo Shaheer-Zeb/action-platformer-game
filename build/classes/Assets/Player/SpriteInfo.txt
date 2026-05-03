@@ -1,0 +1,14 @@
+Row : Name
+0.  : Attack1
+1.  : Attack2
+2.  : Attack3
+3.  : Dead
+4.  : Hurt
+5.  : Idle
+6.  : Jump
+7.  : Run
+
+Total rows = 8.
+Total columns = 12.
+
+Each sprite = 128 x 128.
