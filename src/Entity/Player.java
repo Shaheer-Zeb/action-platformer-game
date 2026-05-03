@@ -1,6 +1,7 @@
 package Entity;
 
 import Main.KeyManager;
+import Main.SoundManager;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -33,7 +34,7 @@ public class Player extends Entity implements ActionListener
     
     private int spriteRowNumber = SpriteAction.IDLE.ordinal();
     private int spriteColumnNumber = 1;
-    private int spriteChangeDelay = 125;
+    private int spriteChangeDelay = 100;
     
     private static final int initialXPos = Main.Main.WIDTH / 7;
     private static final int initialYPos = Main.Main.HEIGHT / 2 + 70; //  Adding a ghost constant, just to adjust the yPos of player
@@ -126,6 +127,8 @@ public class Player extends Entity implements ActionListener
             SpriteAction[] actions = SpriteAction.values();
             int randomIndex = random.nextInt(0, 3);
             SpriteAction action = actions[randomIndex];
+            
+            SoundManager.playRandomAttackSound();
             
             spriteRowNumber = action.ordinal();
         }

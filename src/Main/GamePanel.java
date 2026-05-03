@@ -30,6 +30,8 @@ public class GamePanel extends JPanel implements ActionListener
                 
         player = new Player();
         
+        SoundManager.playLevelOneMusic();
+        
         timer = new Timer(1000/ FPS, this);
         timer.start();
     }
