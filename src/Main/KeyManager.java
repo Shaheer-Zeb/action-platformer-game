@@ -20,7 +20,7 @@ public class KeyManager implements KeyListener
         }
         return instance;
     }
-    private boolean leftPressed, rightPressed, jumpPressed, jPressed;
+    private boolean leftPressed, rightPressed, jumpPressed, jPressed, isAlreadyAttacking;
     @Override
     public void keyTyped(KeyEvent ke) 
     {
@@ -35,7 +35,15 @@ public class KeyManager implements KeyListener
         if (ke.getKeyChar() == ' ')
             jumpPressed = true;
         if (ke.getKeyChar() == 'j')
-            jPressed = true;
+        {
+            if (!isAlreadyAttacking)
+            {
+                jPressed = true;
+                isAlreadyAttacking = true;
+            }
+            else
+                jPressed = false;
+        }
     }
     @Override
     public void keyReleased(KeyEvent ke) 
@@ -47,7 +55,10 @@ public class KeyManager implements KeyListener
         if (ke.getKeyChar() == ' ')
             jumpPressed = false;
         if (ke.getKeyChar() == 'j')
+        {
             jPressed = false;
+            isAlreadyAttacking = false; 
+        }
     }
     public boolean isLeftPressed()
     {

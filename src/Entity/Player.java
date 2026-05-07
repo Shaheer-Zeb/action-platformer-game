@@ -16,6 +16,7 @@ import javax.swing.Timer;
 /**
  *
  * @author ShaheerZK
+ * Uses the Singleton pattern.
  */
 public class Player extends Entity implements ActionListener
 {
@@ -44,6 +45,11 @@ public class Player extends Entity implements ActionListener
     private final KeyManager keyManager;
     private Random random = new Random();
     
+    private long startTime = System.currentTimeMillis();
+    private final int SOUNDDELAY = 300;
+    
+    private static Player instance;
+    
     private enum SpriteAction
     {
         ATTACK1, ATTACK2, ATTACK3, DEAD, HURT, IDLE, JUMP, RUN;
@@ -59,9 +65,15 @@ public class Player extends Entity implements ActionListener
         spriteTimer = new Timer(spriteChangeDelay, this);
         spriteTimer.start();
     }
-    public Player()
+    private Player()
     {
         this(initialXPos, initialYPos, width, height, null);
+    }
+    public static Player getInstance()
+    {
+        if (instance == null)
+            instance = new Player();
+        return instance;
     }
     public void draw(Graphics2D g2d)
     {
@@ -108,6 +120,14 @@ public class Player extends Entity implements ActionListener
             spriteRowNumber = SpriteAction.RUN.ordinal();
             moving = true;
             changeXPos(-speed);
+            
+            long currentTime = System.currentTimeMillis();
+            long deltaTime = currentTime - startTime;
+            if (deltaTime > SOUNDDELAY)
+            {
+                SoundManager.playRandomWalkingSound();
+                startTime = currentTime;
+            }
         }
         else if (keyManager.isRightPressed())
         {
@@ -127,9 +147,13 @@ public class Player extends Entity implements ActionListener
             SpriteAction[] actions = SpriteAction.values();
             int randomIndex = random.nextInt(0, 3);
             SpriteAction action = actions[randomIndex];
-            
-            SoundManager.playRandomAttackSound();
-            
+            long currentTime = System.currentTimeMillis();
+            long deltaTime = currentTime - startTime;
+            if (deltaTime > SOUNDDELAY)
+            {
+                SoundManager.playRandomAttackSound();
+                startTime = currentTime;
+            }
             spriteRowNumber = action.ordinal();
         }
         else if (!moving && !isJumping)

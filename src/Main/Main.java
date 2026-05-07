@@ -22,7 +22,7 @@ public class Main
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
         
-        GamePanel panel = new GamePanel();
+        GamePanel panel = GamePanel.getInstance();
         frame.add(panel);
         
         frame.setVisible(true);
