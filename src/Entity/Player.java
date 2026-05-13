@@ -1,13 +1,15 @@
 package Entity;
 
-import Main.KeyManager;
-import Main.SoundManager;
+import Managers.CollisionManager;
+import Managers.HealthManager;
+import Managers.KeyManager;
+import Managers.SoundManager;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 import javax.imageio.ImageIO;
@@ -20,9 +22,11 @@ import javax.swing.Timer;
  */
 public class Player extends Entity implements ActionListener
 {
-    private final int speed = 3;
-    private final int jumpSpeed = -100;
-    private final int gravity = 3;
+    private final int speedX = 3;
+    private double speedY;
+    
+    private final int jumpSpeed = 12;
+    private final double gravity = 0.5;
     private boolean facingLeft;
     private boolean isJumping;
     
@@ -48,6 +52,9 @@ public class Player extends Entity implements ActionListener
     private long startTime = System.currentTimeMillis();
     private final int SOUNDDELAY = 300;
     
+    private int health = 5;
+    private HealthManager healthManager = HealthManager.getInstance();
+    
     private static Player instance;
     
     private enum SpriteAction
@@ -60,7 +67,7 @@ public class Player extends Entity implements ActionListener
         super(xPos, yPos, width, height, image);
         loadSpriteSheet("/Assets/Player/PlayerSpritesheet.png");
         
-        this.keyManager = Main.KeyManager.getInstance();
+        this.keyManager = Managers.KeyManager.getInstance();
         
         spriteTimer = new Timer(spriteChangeDelay, this);
         spriteTimer.start();
@@ -108,41 +115,68 @@ public class Player extends Entity implements ActionListener
     public void update()
     {
         changePosition();
-        if (isJumping)
-            applyGravity();
+        if (CollisionManager.playerAndBossColliding())
+            System.out.println("Colliding.");
     }
     private void changePosition()
+    {
+        manageMovement();
+        manageJump();
+        manageAttack();
+    }
+    private void manageMovement()
     {
         boolean moving = false;
         if (keyManager.isLeftPressed())
         {
             facingLeft = true;
-            spriteRowNumber = SpriteAction.RUN.ordinal();
+            if (!isJumping)
+                spriteRowNumber = SpriteAction.RUN.ordinal();
             moving = true;
-            changeXPos(-speed);
+            changeXPos(-speedX);
             
-            long currentTime = System.currentTimeMillis();
-            long deltaTime = currentTime - startTime;
-            if (deltaTime > SOUNDDELAY)
-            {
-                SoundManager.playRandomWalkingSound();
-                startTime = currentTime;
-            }
+//            long currentTime = System.currentTimeMillis();
+//            long deltaTime = currentTime - startTime;
+//            if (deltaTime > SOUNDDELAY)
+//            {
+//                SoundManager.playRandomWalkingSound();
+//                startTime = currentTime;
+//            }
         }
         else if (keyManager.isRightPressed())
         {
             facingLeft = false;
-            spriteRowNumber = SpriteAction.RUN.ordinal();
+            if (!isJumping)
+                spriteRowNumber = SpriteAction.RUN.ordinal();
             moving = true;
-            changeXPos(speed);
+            changeXPos(speedX);
         }
+        else if (!moving && !isJumping)
+            spriteRowNumber = SpriteAction.IDLE.ordinal();
+    }
+    private void manageJump()
+    {
         if (keyManager.isJumpPressed() && !isJumping)
         {
             spriteRowNumber = SpriteAction.JUMP.ordinal();
             isJumping = true;
-            changeYPos(jumpSpeed);
+            speedY = -jumpSpeed;
         }
-        else if (keyManager.isAttack1Pressed())
+        if (isJumping)
+        {
+            changeYPos((int)speedY);
+            speedY += gravity;
+            if (getYPos() >= initialYPos)
+            {
+                setYPos(initialYPos);
+                isJumping = false;
+                speedY = 0;
+            }
+        }
+    }
+    private void manageAttack()
+    {
+        if (keyManager.isAttack1Pressed())
         {
             SpriteAction[] actions = SpriteAction.values();
             int randomIndex = random.nextInt(0, 3);
@@ -156,14 +190,6 @@ public class Player extends Entity implements ActionListener
             }
             spriteRowNumber = action.ordinal();
         }
-        else if (!moving && !isJumping)
-            spriteRowNumber = SpriteAction.IDLE.ordinal();
-    }
-    private void applyGravity()
-    {
-        if (getYPos() >= initialYPos)
-            isJumping = false;
-        changeYPos(gravity);
     }
     private void loadSpriteSheet(String path)
     {
@@ -175,5 +201,10 @@ public class Player extends Entity implements ActionListener
         {
             System.out.println("Unable to open the player spritesheet");
         }
+    }
+    @Override
+    public Rectangle getBounds()
+    {
+        return new Rectangle(getXPos(), getYPos(), width - 100, height); // this woodoo constant is used to just adjust the collision scale
     }
 }

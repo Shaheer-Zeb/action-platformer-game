@@ -3,12 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/hero/Desktop/JavaPractice/UniversityShit/Platformer/src/Main/GamePanel.java</file>
+            <file>file:/home/hero/Desktop/JavaPractice/UniversityShit/Platformer/src/Entity/Boss.java</file>
             <file>file:/home/hero/Desktop/JavaPractice/UniversityShit/Platformer/src/Entity/Player.java</file>
-            <file>file:/home/hero/Desktop/JavaPractice/UniversityShit/Platformer/src/Main/KeyManager.java</file>
-            <file>file:/home/hero/Desktop/JavaPractice/UniversityShit/Platformer/src/Main/MouseManager.java</file>
-            <file>file:/home/hero/Desktop/JavaPractice/UniversityShit/Platformer/src/Main/Main.java</file>
-            <file>file:/home/hero/Desktop/JavaPractice/UniversityShit/Platformer/src/Main/SoundManager.java</file>
+            <file>file:/home/hero/Desktop/JavaPractice/UniversityShit/Platformer/src/Managers/CollisionManager.java</file>
+            <file>file:/home/hero/Desktop/JavaPractice/UniversityShit/Platformer/src/Managers/HealthManager.java</file>
+            <file>file:/home/hero/Desktop/JavaPractice/UniversityShit/Platformer/src/Assets/Player/HeartSpritesheet.png</file>
+            <file>file:/home/hero/Desktop/JavaPractice/UniversityShit/Platformer/src/Main/GamePanel.java</file>
         </group>
     </open-files>
 </project-private>

@@ -1,6 +1,7 @@
 package Entity;
 
 import java.awt.Image;
+import java.awt.Rectangle;
 
 /**
  * @author ShaheerZK
@@ -65,5 +66,9 @@ public class Entity
     public int getHeight()
     {
         return height;
+    }
+    public Rectangle getBounds()
+    {
+        return new Rectangle(xPos, yPos, width, height);
     }
 }

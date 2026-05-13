@@ -1,12 +1,14 @@
 package Main;
 
+import Managers.LevelManager;
+import Managers.KeyManager;
 import Entity.Boss;
 import Entity.Player;
+import Managers.HealthManager;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.AffineTransform;
 
 /**
  * @author ShaheerZK
@@ -15,14 +17,16 @@ import java.awt.geom.AffineTransform;
 
 public class GamePanel extends JPanel implements ActionListener
 {
-    private final int FPS = 120;
+    private final int FPS = 90;
     private final Timer timer;
     private KeyManager keyManager = KeyManager.getInstance();
     private final Image background;
     
     private Player player;
     private Boss boss;
+    private HealthManager healthManager;
     private static GamePanel instance;
+    private boolean isGameOver;
     
     private GamePanel()
     {        
@@ -32,6 +36,7 @@ public class GamePanel extends JPanel implements ActionListener
                 
         player = Player.getInstance();
         boss = Boss.getInstance();
+        healthManager = HealthManager.getInstance();
         
         background = LevelManager.loadLevel();
         timer = new Timer(1000/ FPS, this);
@@ -53,6 +58,7 @@ public class GamePanel extends JPanel implements ActionListener
     {
         player.update();
         boss.update();
+        checkGameOver();
     }
     @Override
     public void paintComponent(Graphics g)
@@ -71,8 +77,20 @@ public class GamePanel extends JPanel implements ActionListener
     }
     private void displayLevelAndHealth(Graphics2D g2)
     {
+        healthManager.drawHearts(g2);
+        
         g2.setColor(Color.white);
         g2.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 30));
         g2.drawString("Level: " + LevelManager.getCurrentLevel(), 30, 30);
+    }
+    private void checkGameOver()
+    {
+        if (healthManager.getHealth() <= 0)
+            isGameOver = true;
+        if (isGameOver)
+        {
+            System.out.println("Game over mate.");
+            System.exit(0);
+        }
     }
 }

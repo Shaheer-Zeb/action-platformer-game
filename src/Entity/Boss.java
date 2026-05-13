@@ -1,5 +1,6 @@
 package Entity;
 
+import Managers.CollisionManager;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -61,7 +62,13 @@ public class Boss extends Entity implements ActionListener
         Player player = Player.getInstance();
         int playerX = player.getXPos();
         
-        if (playerX < this.getXPos())
+        int max = Math.max(playerX, this.getXPos());
+        int min = Math.min(playerX, getXPos());
+        
+        int distance = max - min;
+        if (CollisionManager.playerAndBossColliding())
+            spriteRowNumber = SpriteAction.ATTACK.ordinal();
+        else if (playerX < this.getXPos())
         {
             spriteRowNumber = SpriteAction.WALK.ordinal();
             this.changeXPos(-speed);
