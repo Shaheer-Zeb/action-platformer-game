@@ -24,6 +24,7 @@ public class Player extends Entity implements ActionListener
 {
     private final int speedX = 3;
     private double speedY;
+    private boolean moving;
     
     private final int jumpSpeed = 12;
     private final double gravity = 0.5;
@@ -49,13 +50,21 @@ public class Player extends Entity implements ActionListener
     private final KeyManager keyManager;
     private Random random = new Random();
     
-    private long startTime = System.currentTimeMillis();
+    private long attackSoundStartTime = System.currentTimeMillis();
     private final int SOUNDDELAY = 300;
     
     private int health = 5;
     private HealthManager healthManager = HealthManager.getInstance();
+    private long lastHitTime = System.currentTimeMillis();
+    private final int GETTINGHITDELAY = 1000;
+    private boolean isAttacking;
+    private int pushBackDistance = 30;
+    private int pushBackSpeed = 2;
+    private boolean isPushedBack;
+    private int pushBackReduction = 1;
     
     private static Player instance;
+    private Boss boss;
     
     private enum SpriteAction
     {
@@ -68,6 +77,7 @@ public class Player extends Entity implements ActionListener
         loadSpriteSheet("/Assets/Player/PlayerSpritesheet.png");
         
         this.keyManager = Managers.KeyManager.getInstance();
+        boss = Boss.getInstance();
         
         spriteTimer = new Timer(spriteChangeDelay, this);
         spriteTimer.start();
@@ -115,8 +125,7 @@ public class Player extends Entity implements ActionListener
     public void update()
     {
         changePosition();
-        if (CollisionManager.playerAndBossColliding())
-            System.out.println("Colliding.");
+        checkBeingAttacked();
     }
     private void changePosition()
     {
@@ -126,7 +135,7 @@ public class Player extends Entity implements ActionListener
     }
     private void manageMovement()
     {
-        boolean moving = false;
+        moving = false;
         if (keyManager.isLeftPressed())
         {
             facingLeft = true;
@@ -136,11 +145,11 @@ public class Player extends Entity implements ActionListener
             changeXPos(-speedX);
             
 //            long currentTime = System.currentTimeMillis();
-//            long deltaTime = currentTime - startTime;
+//            long deltaTime = currentTime - attackSoundStartTime;
 //            if (deltaTime > SOUNDDELAY)
 //            {
 //                SoundManager.playRandomWalkingSound();
-//                startTime = currentTime;
+//                attackSoundStartTime = currentTime;
 //            }
         }
         else if (keyManager.isRightPressed())
@@ -182,13 +191,52 @@ public class Player extends Entity implements ActionListener
             int randomIndex = random.nextInt(0, 3);
             SpriteAction action = actions[randomIndex];
             long currentTime = System.currentTimeMillis();
-            long deltaTime = currentTime - startTime;
+            long deltaTime = currentTime - attackSoundStartTime;
             if (deltaTime > SOUNDDELAY)
             {
                 SoundManager.playRandomAttackSound();
-                startTime = currentTime;
+                attackSoundStartTime = currentTime;
             }
             spriteRowNumber = action.ordinal();
+            isAttacking = true;
+        }
+    }
+    private void checkBeingAttacked()
+    {
+        long currentTime = System.currentTimeMillis();
+        long deltaTime = currentTime - lastHitTime;
+        
+        if (deltaTime > GETTINGHITDELAY && boss.getIsAttacking() && CollisionManager.playerAndBossColliding() && !isJumping)
+        {
+            int distance = boss.isFacingRight() ? pushBackDistance : -pushBackDistance;
+            pushBack(distance);
+            healthManager.reduceHealth();
+            lastHitTime = currentTime;
+        }
+    }
+    private void pushBack(int distance)
+    {
+        int tempPosition = getXPos();
+        boolean isRight = distance > 0;
+        isPushedBack = true;
+        int speedX = (distance > 0) ? pushBackSpeed : -pushBackSpeed;
+        if (isPushedBack)
+        {
+            changeXPos(speedX);
+            pushBackReduction = (distance > 0) ? -pushBackReduction : pushBackReduction;
+            speedX += pushBackReduction;
+            if (isRight && getXPos() < tempPosition - distance)
+            {
+                setXPos(tempPosition - distance);
+                isPushedBack = false;
+                speedX = 0;
+            }
+            else if (!isRight && getXPos() > tempPosition + distance)
+            {
+                setXPos(tempPosition + distance);
+                isPushedBack = false;
+                speedX = 0;
+            }
         }
     }
     private void loadSpriteSheet(String path)
@@ -201,6 +249,10 @@ public class Player extends Entity implements ActionListener
         {
             System.out.println("Unable to open the player spritesheet");
         }
+    }
+    public boolean getIsAttacking()
+    {
+        return isAttacking;
     }
     @Override
     public Rectangle getBounds()

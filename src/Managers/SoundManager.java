@@ -54,8 +54,6 @@ public class SoundManager
         walkingSounds[6] = walkingSeven;
         walkingSounds[7] = walkingEight;
     }
-    
-    
     public static void playLevelOneMusic()
     {
         if (levelOneMusic.exists())

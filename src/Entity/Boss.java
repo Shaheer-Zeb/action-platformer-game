@@ -2,6 +2,7 @@ package Entity;
 
 import Managers.CollisionManager;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -32,7 +33,11 @@ public class Boss extends Entity implements ActionListener
     private int spriteColumnNumber;
 
     private boolean facingRight;
+    private boolean isAttacking;
     
+    private int health = 22;
+    private long lastHitTime = System.currentTimeMillis();
+    private final int HITTIMEDELAY = 200;
     
     private static Boss instance;
     private enum SpriteAction
@@ -56,29 +61,63 @@ public class Boss extends Entity implements ActionListener
     public void update()
     {
         move();
+        manageGettingHit();
+        checkBossDeath();
     }
     private void move()
     {
         Player player = Player.getInstance();
         int playerX = player.getXPos();
-        
-        int max = Math.max(playerX, this.getXPos());
-        int min = Math.min(playerX, getXPos());
-        
-        int distance = max - min;
+                
         if (CollisionManager.playerAndBossColliding())
-            spriteRowNumber = SpriteAction.ATTACK.ordinal();
+            attack();
         else if (playerX < this.getXPos())
         {
-            spriteRowNumber = SpriteAction.WALK.ordinal();
-            this.changeXPos(-speed);
-            facingRight = false;
+            moveLeft();
         }
         else if (playerX > this.getXPos())
         {
-            spriteRowNumber = SpriteAction.WALK.ordinal();
-            this.changeXPos(speed);
-            facingRight = true;
+            moveRight();
+        }
+    }
+    private void attack()
+    {
+        spriteRowNumber = SpriteAction.ATTACK.ordinal();
+        isAttacking = true;
+    }
+    private void moveLeft()
+    {
+        spriteRowNumber = SpriteAction.WALK.ordinal();
+        this.changeXPos(-speed);
+        facingRight = false;
+    }
+    private void moveRight()
+    {
+        spriteRowNumber = SpriteAction.WALK.ordinal();
+        this.changeXPos(speed);
+        facingRight = true;
+    }
+    private void manageGettingHit()
+    {
+        long currentTime = System.currentTimeMillis();
+        long deltaTime = currentTime - lastHitTime;
+        if (deltaTime > HITTIMEDELAY && Player.getInstance().getIsAttacking() && CollisionManager.playerAndBossColliding())
+        {
+            health--;
+            lastHitTime = currentTime;
+            System.out.println(health);
+        }
+    }
+    private void addHitEffect()
+    {
+        
+    }
+    private void checkBossDeath()
+    {
+        if (health <= 0)
+        {
+            System.out.println("Boss died mate.");
+            System.exit(0);
         }
     }
     public void draw(Graphics2D g2d)
@@ -104,7 +143,10 @@ public class Boss extends Entity implements ActionListener
             System.out.println("Unable to open the player spritesheet");
         }
     }
-
+    public boolean getIsAttacking()
+    {
+        return isAttacking;
+    }
     @Override
     public void actionPerformed(ActionEvent ae) 
     {
@@ -117,5 +159,14 @@ public class Boss extends Entity implements ActionListener
             case 1 -> sheetX = sheetX > 11 * spriteXSize ? 0 : sheetX;
             case 2 -> sheetX = sheetX > 15 * spriteXSize ? 0 : sheetX;
         }
+    }
+    public boolean isFacingRight()
+    {
+        return facingRight;
+    }
+    @Override
+    public Rectangle getBounds()
+    {
+        return new Rectangle(getXPos(), getYPos(), width - 100, height);
     }
 }
