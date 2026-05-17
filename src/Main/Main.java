@@ -10,7 +10,7 @@ import java.awt.*;
 
 public class Main
 {
-    private static JFrame frame;
+    public static JFrame frame;
     public static int WIDTH = 1200;
     public static int HEIGHT = 600;
     
@@ -22,8 +22,8 @@ public class Main
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
         
-        GamePanel panel = GamePanel.getInstance();
-        frame.add(panel);
+        Menu menu = new Menu();
+        frame.add(menu);
         
         frame.setVisible(true);
     }

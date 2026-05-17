@@ -1,5 +1,6 @@
 package Entity;
 
+import Main.GamePanel;
 import Managers.CollisionManager;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -12,7 +13,6 @@ import javax.swing.Timer;
 
 /**
  * @author ShaheerZK
- * Uses a Singleton pattern of course, because what else.
  */
 
 public class Boss extends Entity implements ActionListener
@@ -35,29 +35,31 @@ public class Boss extends Entity implements ActionListener
     private boolean facingRight;
     private boolean isAttacking;
     
-    private int health = 22;
+    private int initialHealth = 10;
+    private int health = initialHealth;
     private long lastHitTime = System.currentTimeMillis();
-    private final int HITTIMEDELAY = 200;
+    private final int HITTIMEDELAY = 100;
     
     private static Boss instance;
+    private GamePanel panel;
     private enum SpriteAction
     {
         IDLE, WALK, ATTACK;
     }
-    private Boss()
+    public Boss(GamePanel panel)
     {
         super(initialX, initialY, width, height, null);
         loadSpriteSheet("/Assets/Boss/Boss1.png");
-        
+        this.panel = panel;
         spriteTimer = new Timer(spriteChangeDelay, this);
         spriteTimer.start();
     }
-    public static Boss getInstance()
-    {
-        if (instance == null)
-            instance = new Boss();
-        return instance;
-    }
+//    public static Boss getInstance()
+//    {
+//        if (instance == null)
+//            instance = new Boss();
+//        return instance;
+//    }
     public void update()
     {
         move();
@@ -66,10 +68,10 @@ public class Boss extends Entity implements ActionListener
     }
     private void move()
     {
-        Player player = Player.getInstance();
+        Player player = panel.getPlayer();
         int playerX = player.getXPos();
                 
-        if (CollisionManager.playerAndBossColliding())
+        if (CollisionManager.playerAndBossColliding(player, this))
             attack();
         else if (playerX < this.getXPos())
         {
@@ -101,7 +103,8 @@ public class Boss extends Entity implements ActionListener
     {
         long currentTime = System.currentTimeMillis();
         long deltaTime = currentTime - lastHitTime;
-        if (deltaTime > HITTIMEDELAY && Player.getInstance().getIsAttacking() && CollisionManager.playerAndBossColliding())
+        Player player = panel.getPlayer();
+        if (deltaTime > HITTIMEDELAY && player.getIsAttacking() && CollisionManager.playerAndBossColliding(player, this))
         {
             health--;
             lastHitTime = currentTime;
@@ -116,9 +119,14 @@ public class Boss extends Entity implements ActionListener
     {
         if (health <= 0)
         {
-            System.out.println("Boss died mate.");
-            System.exit(0);
+            panel.changeLevel();
+            health = initialHealth++;
+            respawn();
         }
+    }
+    private void respawn()
+    {
+        setXPos(initialX);
     }
     public void draw(Graphics2D g2d)
     {

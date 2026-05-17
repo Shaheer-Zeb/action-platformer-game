@@ -7,16 +7,18 @@ import java.awt.Rectangle;
 /**
  * @author ShaheerZK
  */
+public class CollisionManager {
 
-public class CollisionManager
-{
-    private static Player player = Player.getInstance();
-    private static Boss boss = Boss.getInstance();
-    
-    public static boolean playerAndBossColliding()
+    public static boolean playerAndBossColliding(Player player, Boss boss) 
     {
+        if (player == null || boss == null) 
+        {
+            return false;
+        }
+
         Rectangle playerRect = player.getBounds();
         Rectangle bossRect = boss.getBounds();
-        return playerRect.intersects(bossRect);
+        
+        return playerRect != null && bossRect != null && playerRect.intersects(bossRect);
     }
 }

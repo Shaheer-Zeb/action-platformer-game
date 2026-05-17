@@ -2,90 +2,97 @@ package Managers;
 
 import java.awt.Image;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Scanner;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import javax.swing.ImageIcon;
 
 /**
  * @author ShaheerZK
  */
-
 public class LevelManager 
 {
-    private static int currentLevel;
+    private static int currentLevel = 1;
+    private static final int MAX_LEVELS = 8;
+    private static final Path SAVE_PATH = Paths.get("CurrentLevel.txt");
 
     static 
     {
-        try (InputStream is = LevelManager.class.getResourceAsStream("CurrentLevel.txt")) {
-            
-            if (is != null) 
+        loadLevelFromDisk();
+    }
+
+    private static void loadLevelFromDisk() 
+    {
+        try 
+        {
+            if (Files.exists(SAVE_PATH)) 
             {
-                Scanner scanner = new Scanner(is);
-                if (scanner.hasNextInt()) 
-                {
-                    currentLevel = scanner.nextInt() % 9;
-                }
-                scanner.close();
-            } 
-            else 
-            {
-                System.err.println("File not found: /CurrentLevel.txt");
+                String content = Files.readString(SAVE_PATH).trim();
+                currentLevel = Integer.parseInt(content);
+                currentLevel = Math.max(1, Math.min(currentLevel, MAX_LEVELS));
             }
         } 
-        catch (IOException ex) 
+        catch (IOException | NumberFormatException ex) 
         {
-            System.getLogger(LevelManager.class.getName()).log(System.Logger.Level.ERROR, "Failed to read level", ex);
+            currentLevel = 1;
         }
     }
 
     public static Image loadLevel() 
     {
-        switch (currentLevel)
+        switch (currentLevel) 
         {
-            case 1 ->
-            {
-                SoundManager.playLevelOneMusic();
-                return new ImageIcon(LevelManager.class.getResource("/Assets/Backgrounds/Level1.jpg")).getImage();
-            }
-            case 2 ->
-            {
-                SoundManager.playLevelTwoMusic();
-                return new ImageIcon(LevelManager.class.getResource("/Assets/Backgrounds/Level2.jpg")).getImage();
-            }
-            case 3 ->
-            {
-                SoundManager.playLevelThreeMusic();
-                return new ImageIcon(LevelManager.class.getResource("/Assets/Backgrounds/Level3.jpg")).getImage();
-            }
-            case 4 ->
-            {
-                SoundManager.playLevelFourMusic();
-                return new ImageIcon(LevelManager.class.getResource("/Assets/Backgrounds/Level3.jpg")).getImage();
-            }
-            case 5 ->
-            {
-                SoundManager.playLevelFiveMusic();
-                return new ImageIcon(LevelManager.class.getResource("/Assets/Backgrounds/Level1.jpg")).getImage();
-            }
-            case 6 ->
-            {
-                SoundManager.playLevelSixMusic();
-                return new ImageIcon(LevelManager.class.getResource("/Assets/Backgrounds/Level1.jpg")).getImage();
-            }
-            case 7 ->
-            {
-                SoundManager.playLevelSevenMusic();
-                return new ImageIcon(LevelManager.class.getResource("/Assets/Backgrounds/Level1.jpg")).getImage();
-            }
-            case 8 ->
-            {
-                SoundManager.playLevelEightMusic();
-                return new ImageIcon(LevelManager.class.getResource("/Assets/Backgrounds/Level1.jpg")).getImage();
-            }
+            case 1 -> { SoundManager.playLevelOneMusic(); return getImage("Level1.jpg"); }
+            case 2 -> { SoundManager.playLevelTwoMusic(); return getImage("Level2.jpg"); }
+            case 3 -> { SoundManager.playLevelThreeMusic(); return getImage("Level3.jpg"); }
+            case 4 -> { SoundManager.playLevelFourMusic(); return getImage("Level3.jpg"); } 
+            case 5 -> { SoundManager.playLevelFiveMusic(); return getImage("Level1.jpg"); }
+            case 6 -> { SoundManager.playLevelSixMusic(); return getImage("Level1.jpg"); }
+            case 7 -> { SoundManager.playLevelSevenMusic(); return getImage("Level1.jpg"); }
+            case 8 -> { SoundManager.playLevelEightMusic(); return getImage("Level1.jpg"); }
+            default -> { return getImage("Level1.jpg"); }
         }
-        return null;
     }
-    public static int getCurrentLevel()
+    private static Image getImage(String fileName) 
+    {
+        String fullPath = "/Assets/Backgrounds/" + fileName;
+        var resource = LevelManager.class.getResource(fullPath);
+        if (resource == null) 
+        {
+            System.err.println("Resource not found: " + fullPath);
+            return null;
+        }
+        return new ImageIcon(resource).getImage();
+    }
+
+    public static void increaseLevel() 
+    {
+        if (currentLevel < MAX_LEVELS) 
+        {
+            currentLevel++;
+            saveLevelToDisk();
+        }
+    }
+
+    public static void resetLevel() 
+    {
+        currentLevel = 1;
+        saveLevelToDisk();
+    }
+
+    private static void saveLevelToDisk() 
+    {
+        try 
+        {
+            Files.writeString(SAVE_PATH, String.valueOf(currentLevel));
+        } 
+        catch (IOException ex)
+        {
+            System.err.println("Failed to save level mate.: " + ex.getMessage());
+        }
+    }
+
+    public static int getCurrentLevel() 
     {
         return currentLevel;
     }

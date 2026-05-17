@@ -1,5 +1,6 @@
 package Entity;
 
+import Main.GamePanel;
 import Managers.CollisionManager;
 import Managers.HealthManager;
 import Managers.KeyManager;
@@ -18,7 +19,6 @@ import javax.swing.Timer;
 /**
  *
  * @author ShaheerZK
- * Uses the Singleton pattern.
  */
 public class Player extends Entity implements ActionListener
 {
@@ -56,7 +56,7 @@ public class Player extends Entity implements ActionListener
     private int health = 5;
     private HealthManager healthManager = HealthManager.getInstance();
     private long lastHitTime = System.currentTimeMillis();
-    private final int GETTINGHITDELAY = 1000;
+    private final int GETTINGHITDELAY = 2000;
     private boolean isAttacking;
     private int pushBackDistance = 30;
     private int pushBackSpeed = 2;
@@ -65,33 +65,35 @@ public class Player extends Entity implements ActionListener
     
     private static Player instance;
     private Boss boss;
+    private GamePanel panel;
     
     private enum SpriteAction
     {
         ATTACK1, ATTACK2, ATTACK3, DEAD, HURT, IDLE, JUMP, RUN;
     }
     
-    private Player(int xPos, int yPos, int width, int height, Image image) 
+    private Player(int xPos, int yPos, int width, int height, Image image, GamePanel panel) 
     {
         super(xPos, yPos, width, height, image);
         loadSpriteSheet("/Assets/Player/PlayerSpritesheet.png");
         
         this.keyManager = Managers.KeyManager.getInstance();
-        boss = Boss.getInstance();
+        this.panel = panel;
+        boss = this.panel.getBoss();
         
         spriteTimer = new Timer(spriteChangeDelay, this);
         spriteTimer.start();
     }
-    private Player()
+    public Player(GamePanel panel)
     {
-        this(initialXPos, initialYPos, width, height, null);
+        this(initialXPos, initialYPos, width, height, null, panel);
     }
-    public static Player getInstance()
-    {
-        if (instance == null)
-            instance = new Player();
-        return instance;
-    }
+//    public static Player getInstance(GamePanel panel)
+//    {
+//        if (instance == null)
+//            instance = new Player(panel);
+//        return instance;
+//    }
     public void draw(Graphics2D g2d)
     {
         BufferedImage sprite = sheet.getSubimage(sheetX, sheetY, spriteSize, spriteSize);
@@ -206,7 +208,7 @@ public class Player extends Entity implements ActionListener
         long currentTime = System.currentTimeMillis();
         long deltaTime = currentTime - lastHitTime;
         
-        if (deltaTime > GETTINGHITDELAY && boss.getIsAttacking() && CollisionManager.playerAndBossColliding() && !isJumping)
+        if (deltaTime > GETTINGHITDELAY && boss.getIsAttacking() && CollisionManager.playerAndBossColliding(this, boss) && !isJumping)
         {
             int distance = boss.isFacingRight() ? pushBackDistance : -pushBackDistance;
             pushBack(distance);

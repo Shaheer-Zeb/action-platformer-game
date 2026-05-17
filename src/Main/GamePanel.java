@@ -12,7 +12,6 @@ import java.awt.event.ActionListener;
 
 /**
  * @author ShaheerZK
- * Currently uses a Singleton pattern, but I don't know if I'd need it.
  */
 
 public class GamePanel extends JPanel implements ActionListener
@@ -20,34 +19,35 @@ public class GamePanel extends JPanel implements ActionListener
     private final int FPS = 90;
     private final Timer timer;
     private KeyManager keyManager = KeyManager.getInstance();
-    private final Image background;
+    private Image background;
     
     private Player player;
     private Boss boss;
     private HealthManager healthManager;
-    private static GamePanel instance;
     private boolean isGameOver;
     
-    private GamePanel()
+    private static GamePanel instance;
+    
+    public GamePanel()
     {        
         this.addKeyListener(keyManager);
         this.setFocusable(true);
         this.requestFocus();
-                
-        player = Player.getInstance();
-        boss = Boss.getInstance();
+        
+        boss = new Boss(this);
+        player = new Player(this);
         healthManager = HealthManager.getInstance();
         
         background = LevelManager.loadLevel();
         timer = new Timer(1000/ FPS, this);
         timer.start();
     }
-    public static GamePanel getInstance()
-    {
-        if (instance == null)
-            instance = new GamePanel();
-        return instance;
-    }
+//    public static GamePanel getInstance()
+//    {
+//        if (instance == null)
+//            instance = new GamePanel();
+//        return instance;
+//    }
     public void draw(Graphics2D g2)
     {
         displayLevelAndHealth(g2);
@@ -92,5 +92,25 @@ public class GamePanel extends JPanel implements ActionListener
             System.out.println("Game over mate.");
             System.exit(0);
         }
+    }
+    public void changeLevel() {
+        LevelManager.increaseLevel(); 
+        
+        Window window = SwingUtilities.getWindowAncestor(this);
+        if (window instanceof JFrame frame) 
+        {
+            frame.remove(this);
+            frame.add(new GamePanel());
+            frame.revalidate();
+            frame.repaint();
+        }
+    }
+    public Boss getBoss()
+    {
+        return boss;
+    }
+    public Player getPlayer()
+    {
+        return player;
     }
 }

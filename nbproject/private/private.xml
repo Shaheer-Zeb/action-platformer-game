@@ -5,10 +5,10 @@
         <group>
             <file>file:/home/hero/Desktop/JavaPractice/UniversityShit/Platformer/src/Entity/Boss.java</file>
             <file>file:/home/hero/Desktop/JavaPractice/UniversityShit/Platformer/src/Entity/Player.java</file>
-            <file>file:/home/hero/Desktop/JavaPractice/UniversityShit/Platformer/src/Managers/CollisionManager.java</file>
-            <file>file:/home/hero/Desktop/JavaPractice/UniversityShit/Platformer/src/Managers/HealthManager.java</file>
-            <file>file:/home/hero/Desktop/JavaPractice/UniversityShit/Platformer/src/Assets/Player/HeartSpritesheet.png</file>
             <file>file:/home/hero/Desktop/JavaPractice/UniversityShit/Platformer/src/Main/GamePanel.java</file>
+            <file>file:/home/hero/Desktop/JavaPractice/UniversityShit/Platformer/src/Managers/LevelManager.java</file>
+            <file>file:/home/hero/Desktop/JavaPractice/UniversityShit/Platformer/src/Managers/CurrentLevel.txt</file>
+            <file>file:/home/hero/Desktop/JavaPractice/UniversityShit/Platformer/src/Managers/SoundManager.java</file>
         </group>
     </open-files>
 </project-private>
