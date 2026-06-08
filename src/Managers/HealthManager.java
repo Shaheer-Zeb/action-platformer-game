@@ -74,6 +74,14 @@ public class HealthManager
         if (health > 0)
             hearts[--health].setImage(emptyHeartImage);
     }
+    public void resetHealth()
+    {
+        for (int i = 0; i < initialHealth; i++)
+        {
+            hearts[i].setImage(fullHeartImage);
+        }
+        health = initialHealth;
+    }
     private void initHearts()
     {
         hearts = new Heart[initialHealth];

@@ -53,7 +53,8 @@ public class Player extends Entity implements ActionListener
     private long attackSoundStartTime = System.currentTimeMillis();
     private final int SOUNDDELAY = 300;
     
-    private int health = 5;
+    private int startingHealth = 5;
+    private int health = startingHealth;
     private HealthManager healthManager = HealthManager.getInstance();
     private long lastHitTime = System.currentTimeMillis();
     private final int GETTINGHITDELAY = 2000;
@@ -255,6 +256,26 @@ public class Player extends Entity implements ActionListener
     public boolean getIsAttacking()
     {
         return isAttacking;
+    }
+    public void setIsAttacking(boolean b)
+    {
+        isAttacking = b;
+    }
+    public void resetPlayer()
+    {
+        resetPosition();
+        resetHealth();
+    }
+    private void resetPosition()
+    {
+        setXPos(initialXPos);
+        setYPos(initialYPos);
+        isAttacking = false;
+    }
+    private void resetHealth()
+    {
+        health = startingHealth;
+        healthManager.resetHealth();
     }
     @Override
     public Rectangle getBounds()

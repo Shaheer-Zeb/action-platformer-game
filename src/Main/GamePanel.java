@@ -95,15 +95,11 @@ public class GamePanel extends JPanel implements ActionListener
     }
     public void changeLevel() {
         LevelManager.increaseLevel(); 
+        background = LevelManager.loadLevel();
         
-        Window window = SwingUtilities.getWindowAncestor(this);
-        if (window instanceof JFrame frame) 
-        {
-            frame.remove(this);
-            frame.add(new GamePanel());
-            frame.revalidate();
-            frame.repaint();
-        }
+        player.resetPlayer();
+        boss = new Boss(this);
+        repaint();
     }
     public Boss getBoss()
     {

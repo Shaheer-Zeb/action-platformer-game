@@ -2,13 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/home/hero/Desktop/JavaPractice/UniversityShit/Platformer/src/Entity/Boss.java</file>
-            <file>file:/home/hero/Desktop/JavaPractice/UniversityShit/Platformer/src/Entity/Player.java</file>
-            <file>file:/home/hero/Desktop/JavaPractice/UniversityShit/Platformer/src/Main/GamePanel.java</file>
-            <file>file:/home/hero/Desktop/JavaPractice/UniversityShit/Platformer/src/Managers/LevelManager.java</file>
-            <file>file:/home/hero/Desktop/JavaPractice/UniversityShit/Platformer/src/Managers/CurrentLevel.txt</file>
-            <file>file:/home/hero/Desktop/JavaPractice/UniversityShit/Platformer/src/Managers/SoundManager.java</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

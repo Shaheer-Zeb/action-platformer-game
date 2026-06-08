@@ -35,7 +35,7 @@ public class Boss extends Entity implements ActionListener
     private boolean facingRight;
     private boolean isAttacking;
     
-    private int initialHealth = 10;
+    private int initialHealth = 30;
     private int health = initialHealth;
     private long lastHitTime = System.currentTimeMillis();
     private final int HITTIMEDELAY = 100;
@@ -107,6 +107,7 @@ public class Boss extends Entity implements ActionListener
         if (deltaTime > HITTIMEDELAY && player.getIsAttacking() && CollisionManager.playerAndBossColliding(player, this))
         {
             health--;
+            player.setIsAttacking(false);
             lastHitTime = currentTime;
             System.out.println(health);
         }

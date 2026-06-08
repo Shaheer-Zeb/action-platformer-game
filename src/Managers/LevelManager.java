@@ -13,7 +13,7 @@ import javax.swing.ImageIcon;
 public class LevelManager 
 {
     private static int currentLevel = 1;
-    private static final int MAX_LEVELS = 8;
+    private static final int MAXLEVELS = 8;
     private static final Path SAVE_PATH = Paths.get("CurrentLevel.txt");
 
     static 
@@ -29,7 +29,6 @@ public class LevelManager
             {
                 String content = Files.readString(SAVE_PATH).trim();
                 currentLevel = Integer.parseInt(content);
-                currentLevel = Math.max(1, Math.min(currentLevel, MAX_LEVELS));
             }
         } 
         catch (IOException | NumberFormatException ex) 
@@ -40,7 +39,7 @@ public class LevelManager
 
     public static Image loadLevel() 
     {
-        switch (currentLevel) 
+        switch (currentLevel % MAXLEVELS) 
         {
             case 1 -> { SoundManager.playLevelOneMusic(); return getImage("Level1.jpg"); }
             case 2 -> { SoundManager.playLevelTwoMusic(); return getImage("Level2.jpg"); }
@@ -67,11 +66,8 @@ public class LevelManager
 
     public static void increaseLevel() 
     {
-        if (currentLevel < MAX_LEVELS) 
-        {
-            currentLevel++;
-            saveLevelToDisk();
-        }
+        currentLevel++;
+        saveLevelToDisk();
     }
 
     public static void resetLevel() 

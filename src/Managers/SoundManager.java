@@ -21,6 +21,7 @@ public class SoundManager
     private static File levelSixMusic = new File(SoundManager.class.getResource("/Sounds/Music/Level6.wav").getFile());
     private static File levelSevenMusic = new File(SoundManager.class.getResource("/Sounds/Music/Level7.wav").getFile());
     private static File levelEightMusic = new File(SoundManager.class.getResource("/Sounds/Music/Level8.wav").getFile());
+    private static Clip currentMusicClip;
 
     
     private static File attackSound1 = new File(SoundManager.class.getResource("/Sounds/Player/Attack1.wav").getFile());
@@ -53,6 +54,8 @@ public class SoundManager
         walkingSounds[5] = walkingSix;
         walkingSounds[6] = walkingSeven;
         walkingSounds[7] = walkingEight;
+        
+        initCurrentClip();
     }
     public static void playLevelOneMusic()
     {
@@ -60,11 +63,13 @@ public class SoundManager
         {
             try
             {
+                currentMusicClip.stop();
                 AudioInputStream levelOneMusicStream = AudioSystem.getAudioInputStream(levelOneMusic);
                 Clip levelOneClip = AudioSystem.getClip();
                 levelOneClip.open(levelOneMusicStream);
                 levelOneClip.loop(Clip.LOOP_CONTINUOUSLY);
                 levelOneClip.start();
+                currentMusicClip = levelOneClip;
             }
             catch (IOException | LineUnavailableException | UnsupportedAudioFileException e)
             {
@@ -78,11 +83,15 @@ public class SoundManager
         {
             try
             {
+                currentMusicClip.stop();
+                
                 AudioInputStream levelTowMusicStream = AudioSystem.getAudioInputStream(levelTwoMusic);
                 Clip levelTwoClip = AudioSystem.getClip();
                 levelTwoClip.open(levelTowMusicStream);
                 levelTwoClip.loop(Clip.LOOP_CONTINUOUSLY);
                 levelTwoClip.start();
+                
+                currentMusicClip = levelTwoClip;
             }
             catch (IOException | LineUnavailableException | UnsupportedAudioFileException e)
             {
@@ -96,11 +105,15 @@ public class SoundManager
         {
             try
             {
+                currentMusicClip.stop();
+                
                 AudioInputStream levelMusicStream = AudioSystem.getAudioInputStream(levelThreeMusic);
                 Clip levelClip = AudioSystem.getClip();
                 levelClip.open(levelMusicStream);
                 levelClip.loop(Clip.LOOP_CONTINUOUSLY);
                 levelClip.start();
+                
+                currentMusicClip = levelClip;
             }
             catch (IOException | LineUnavailableException | UnsupportedAudioFileException e)
             {
@@ -114,11 +127,15 @@ public class SoundManager
         {
             try
             {
+                currentMusicClip.stop();
+                
                 AudioInputStream levelMusicStream = AudioSystem.getAudioInputStream(levelFourMusic);
                 Clip levelClip = AudioSystem.getClip();
                 levelClip.open(levelMusicStream);
                 levelClip.loop(Clip.LOOP_CONTINUOUSLY);
                 levelClip.start();
+                
+                currentMusicClip = levelClip;
             }
             catch (IOException | LineUnavailableException | UnsupportedAudioFileException e)
             {
@@ -132,11 +149,15 @@ public class SoundManager
         {
             try
             {
+                currentMusicClip.stop();
+                
                 AudioInputStream levelMusicStream = AudioSystem.getAudioInputStream(levelFiveMusic);
                 Clip levelClip = AudioSystem.getClip();
                 levelClip.open(levelMusicStream);
                 levelClip.loop(Clip.LOOP_CONTINUOUSLY);
                 levelClip.start();
+                
+                currentMusicClip = levelClip;
             }
             catch (IOException | LineUnavailableException | UnsupportedAudioFileException e)
             {
@@ -150,11 +171,15 @@ public class SoundManager
         {
             try
             {
+                currentMusicClip.stop();
+                
                 AudioInputStream levelMusicStream = AudioSystem.getAudioInputStream(levelSixMusic);
                 Clip levelClip = AudioSystem.getClip();
                 levelClip.open(levelMusicStream);
                 levelClip.loop(Clip.LOOP_CONTINUOUSLY);
                 levelClip.start();
+                
+                currentMusicClip = levelClip;
             }
             catch (IOException | LineUnavailableException | UnsupportedAudioFileException e)
             {
@@ -168,11 +193,15 @@ public class SoundManager
         {
             try
             {
+                currentMusicClip.stop();
+                
                 AudioInputStream levelMusicStream = AudioSystem.getAudioInputStream(levelSevenMusic);
                 Clip levelClip = AudioSystem.getClip();
                 levelClip.open(levelMusicStream);
                 levelClip.loop(Clip.LOOP_CONTINUOUSLY);
                 levelClip.start();
+                
+                currentMusicClip = levelClip;
             }
             catch (IOException | LineUnavailableException | UnsupportedAudioFileException e)
             {
@@ -186,11 +215,15 @@ public class SoundManager
         {
             try
             {
+                currentMusicClip.stop();
+                
                 AudioInputStream levelMusicStream = AudioSystem.getAudioInputStream(levelEightMusic);
                 Clip levelClip = AudioSystem.getClip();
                 levelClip.open(levelMusicStream);
                 levelClip.loop(Clip.LOOP_CONTINUOUSLY);
                 levelClip.start();
+                
+                currentMusicClip = levelClip;
             }
             catch (IOException | LineUnavailableException | UnsupportedAudioFileException e)
             {
@@ -231,6 +264,25 @@ public class SoundManager
             catch (IOException | LineUnavailableException | UnsupportedAudioFileException e)
             {
                 System.out.println("Something bad occured while playing the walking sound mate.");
+            }
+        }
+    }
+    public static void initCurrentClip()
+    {
+         if (levelOneMusic.exists())
+        {
+            try
+            {
+                AudioInputStream levelOneMusicStream = AudioSystem.getAudioInputStream(levelOneMusic);
+                Clip levelOneClip = AudioSystem.getClip();
+                levelOneClip.open(levelOneMusicStream);
+                levelOneClip.loop(Clip.LOOP_CONTINUOUSLY);
+                
+                currentMusicClip = levelOneClip;
+            }
+            catch (IOException | LineUnavailableException | UnsupportedAudioFileException e)
+            {
+                System.out.println("Something bad occured while playing the level one music mate.");
             }
         }
     }
